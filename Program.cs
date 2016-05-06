@@ -10,7 +10,7 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "5211 5273 0672 4150";
+            string creditCardNumber = "4382 5355 0110 1336";
             Program p = new Program();
 
             if (p.IsCreditNumberGrouped(creditCardNumber) == 1)
@@ -70,7 +70,7 @@ namespace CreditCardMethods
             {
                 return "MasterCard";
             }
-            else if (Convert.ToInt32(cardNumber[0]) == 4)
+            else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
             {
                 return "Visa";
             }
