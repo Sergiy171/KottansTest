@@ -10,21 +10,24 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "4382 5355 0110 1336";
+            string creditCardNumber = "343434343434343";
             Program p = new Program();
 
-            if (p.IsCreditNumberGrouped(creditCardNumber) == 1)
-            {
-                Console.WriteLine("Цифри згруповані");
-            }
-            else if (p.IsCreditNumberGrouped(creditCardNumber) == 0)
-            {
-                Console.WriteLine("Цифри незгруповані");
-            }
-            else
-            {
-                Console.WriteLine("Неправильно введений номер картки");
-            }
+            //if (p.IsCreditNumberGrouped(creditCardNumber) == 1)
+            //{
+            //    Console.WriteLine("Цифри згруповані");
+            //}
+            //else if (p.IsCreditNumberGrouped(creditCardNumber) == 0)
+            //{
+            //    Console.WriteLine("Цифри незгруповані");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Неправильно введений номер картки");
+            //}
+
+            Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
+            Console.WriteLine();
 
             Console.WriteLine(p.GetCreditCardVendor(creditCardNumber));
 
@@ -60,23 +63,58 @@ namespace CreditCardMethods
 
             if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
             {
-                return "American Express";
+                if (CreditCardNumbersCount(cardNumber) == 15)
+                {
+                    return "American Express";
+                }
+                else
+                {
+                    return "Unknown";
+                }
             }
             else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
             {
-                return "Maestro";
+                if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                {
+                    return "Maestro";
+                }
+                else
+                {
+                    return "Unknown";
+                }
             }
             else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
             {
-                return "MasterCard";
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    return "MasterCard";
+                }
+                else
+                {
+                    return "Unknown";
+                }
             }
             else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
             {
-                return "Visa";
+                if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
+                {
+                    return "Visa";
+                }
+                else
+                {
+                    return "Unknown";
+                }
             }
             else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
             {
-                return "JCB";
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    return "JCB";
+                }
+                else
+                {
+                    return "Unknown";
+                }
             }
             else
             {
@@ -86,26 +124,26 @@ namespace CreditCardMethods
 
         private int CreditCardNumbersCount(string cardNumber)
         {
-            return cardNumber.Length;
+            return ConvertedCardNumber(cardNumber).Count();
         }
 
-        private int IsCreditNumberGrouped(string cardNumber)
-        {
-            int numbersCount = CreditCardNumbersCount(cardNumber);
+        //private int IsCreditNumberGrouped(string cardNumber)
+        //{
+        //    int numbersCount = CreditCardNumbersCount(cardNumber);
 
-            if (numbersCount == 16)
-            {
-                return 0;
-            }
-            else if (numbersCount == 19)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
+        //    if (numbersCount == 16)
+        //    {
+        //        return 0;
+        //    }
+        //    else if (numbersCount == 19)
+        //    {
+        //        return 1;
+        //    }
+        //    else
+        //    {
+        //        return 2;
+        //    }
+        //}
 
         private List<int> ConvertedCardNumber(string cardNumber)
         {
@@ -122,9 +160,11 @@ namespace CreditCardMethods
 
         private List<int> SimpleLuhnAlgorithm(List<int> convertedCardNumber)
         {
-            for (int i = 0; i < convertedCardNumber.Count; i++ )
+            int j = 0;
+            for (int i = convertedCardNumber.Count - 1; i >= 0; i--)
             {
-                if (((i % 2) + 1) == 1)
+                j += 1;
+                if ((j % 2) == 0)
                 {
                     convertedCardNumber[i] *= 2;
 
@@ -133,7 +173,7 @@ namespace CreditCardMethods
                         convertedCardNumber[i] -= 9;
                     }
                 }
-            }
+            }            
 
             return convertedCardNumber;
         }
@@ -186,22 +226,22 @@ namespace CreditCardMethods
             string strCardNumber = convCardNumber.ToString();
             do
             {
-                if ((convCardNumber[15]) != 9)
+                if ((convCardNumber[(convCardNumber.Count - 1)]) != 9)
                 {
-                    convCardNumber[15] += 1;
+                    convCardNumber[(convCardNumber.Count - 1)] += 1;
                 }
                 else
                 {
-                    (convCardNumber[15]) = 0;
+                    (convCardNumber[(convCardNumber.Count - 1)]) = 0;
 
-                    if ((convCardNumber[14]) != 9)
+                    if ((convCardNumber[(convCardNumber.Count - 2)]) != 9)
                     {
-                        convCardNumber[14] += 1;
+                        convCardNumber[(convCardNumber.Count - 2)] += 1;
                     }
                     else
                     {
-                        convCardNumber[14] = 0;
-                        convCardNumber[13] += 1;
+                        convCardNumber[(convCardNumber.Count - 2)] = 0;
+                        convCardNumber[(convCardNumber.Count - 3)] += 1;
                     }
                 }
                                 
