@@ -13,19 +13,6 @@ namespace CreditCardMethods
             string creditCardNumber = "343434343434343";
             Program p = new Program();
 
-            //if (p.IsCreditNumberGrouped(creditCardNumber) == 1)
-            //{
-            //    Console.WriteLine("Цифри згруповані");
-            //}
-            //else if (p.IsCreditNumberGrouped(creditCardNumber) == 0)
-            //{
-            //    Console.WriteLine("Цифри незгруповані");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Неправильно введений номер картки");
-            //}
-
             Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
             Console.WriteLine();
 
@@ -126,24 +113,6 @@ namespace CreditCardMethods
         {
             return ConvertedCardNumber(cardNumber).Count();
         }
-
-        //private int IsCreditNumberGrouped(string cardNumber)
-        //{
-        //    int numbersCount = CreditCardNumbersCount(cardNumber);
-
-        //    if (numbersCount == 16)
-        //    {
-        //        return 0;
-        //    }
-        //    else if (numbersCount == 19)
-        //    {
-        //        return 1;
-        //    }
-        //    else
-        //    {
-        //        return 2;
-        //    }
-        //}
 
         private List<int> ConvertedCardNumber(string cardNumber)
         {
