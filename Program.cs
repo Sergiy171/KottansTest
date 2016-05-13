@@ -10,7 +10,7 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "343434343434343";
+            string creditCardNumber = "35301113333000001";
             Program p = new Program();
 
             Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
@@ -190,6 +190,7 @@ namespace CreditCardMethods
 
         public string GenerateNextCreditCardNumber(string cardNumber)
         {
+            string oldVendor = GetCreditCardVendor(cardNumber);
             List<int> convCardNumber = ConvertedCardNumber(cardNumber);
 
             string strCardNumber = convCardNumber.ToString();
@@ -218,7 +219,16 @@ namespace CreditCardMethods
             }
             while (!(IsCreditCardNumberValid(strCardNumber)));
 
-            return strCardNumber;
+            string newVendor = GetCreditCardVendor(strCardNumber);
+
+            if ((oldVendor) == (newVendor))
+            {
+                return strCardNumber;
+            }
+            else
+            {
+                return "No more card numbers available for this vendor.";
+            }
         }
 
     }
