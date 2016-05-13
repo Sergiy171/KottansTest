@@ -10,38 +10,17 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "35301113333000001";
+            string creditCardNumber = "50000000000006114";
             Program p = new Program();
 
-            Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
-            Console.WriteLine();
-
             Console.WriteLine(p.GetCreditCardVendor(creditCardNumber));
-
-            foreach (int item in p.ConvertedCardNumber(creditCardNumber))
-            {
-                Console.Write(Convert.ToString(item) + " ");
-            }
-
             Console.WriteLine();
-            Console.WriteLine("Luhn:");
-
-            foreach (int item in p.SimpleLuhnAlgorithm(p.ConvertedCardNumber(creditCardNumber)))
-            {
-                Console.Write(Convert.ToString(item) + " ");
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Сума по Луну: " + Convert.ToString(p.LuhnSummary(p.SimpleLuhnAlgorithm(p.ConvertedCardNumber(creditCardNumber)))));
-
-            Console.WriteLine();
-            Console.WriteLine("Контрольне число: " + Convert.ToString(p.CheckDigit(p.SimpleLuhnAlgorithm(p.ConvertedCardNumber(creditCardNumber)))));
-
-            Console.WriteLine();
-            Console.WriteLine("Наступний номер: " + Convert.ToString(p.GenerateNextCreditCardNumber(creditCardNumber)));
-
-            Console.WriteLine();
+                        
             Console.WriteLine("Валідність: " + Convert.ToString(p.IsCreditCardNumberValid(creditCardNumber)));
+            Console.WriteLine();
+                        
+            Console.WriteLine("Наступний номер: " + Convert.ToString(p.GenerateNextCreditCardNumber(creditCardNumber)));
+            Console.WriteLine();
             
             Console.ReadKey();
         }
@@ -147,6 +126,72 @@ namespace CreditCardMethods
             }
         }
 
+        public string GetCreditCardVendor(string cardNumber, bool withoutValidation)
+        {
+            int tempSubstringFirstTwoNumbers = Convert.ToInt32(cardNumber.Substring(0, 2));
+            int tempSubstringFirstFourNumbers = Convert.ToInt32(cardNumber.Substring(0, 4));
+
+            if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
+            {
+                if (CreditCardNumbersCount(cardNumber) == 15)
+                {
+                    return "American Express";
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+            else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
+            {
+                if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                {
+                    return "Maestro";
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+            else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
+            {
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    return "MasterCard";
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+            else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
+            {
+                if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
+                {
+                    return "Visa";
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+            else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
+            {
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    return "JCB";
+                }
+                else
+                {
+                    return "Unknown";
+                }
+            }
+            else
+            {
+                return "Unknown";
+            }
+        }
+
         private int CreditCardNumbersCount(string cardNumber)
         {
             return ConvertedCardNumber(cardNumber).Count();
@@ -205,7 +250,7 @@ namespace CreditCardMethods
 
         public bool IsCreditCardNumberValid(string cardNumber)
         {
-            if (GetCreditCardVendor(cardNumber) != "Unknown")
+            if (GetCreditCardVendor(cardNumber, true) != "Unknown")
             {
                 if ((LuhnSummary(SimpleLuhnAlgorithm(ConvertedCardNumber(cardNumber))) % 10) == 0)
                 {
@@ -215,6 +260,18 @@ namespace CreditCardMethods
                 {
                     return false;
                 }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsCreditCardNumberValid(string cardNumber, bool withoutVendoring)
+        {
+            if ((LuhnSummary(SimpleLuhnAlgorithm(ConvertedCardNumber(cardNumber))) % 10) == 0)
+            {
+                return true;
             }
             else
             {
@@ -264,7 +321,7 @@ namespace CreditCardMethods
 
                     strCardNumber = ConvertNumberToString(convCardNumber);
                 }
-                while (!(IsCreditCardNumberValid(strCardNumber)));
+                while (!(IsCreditCardNumberValid(strCardNumber, true)));
 
                 string newVendor = GetCreditCardVendor(strCardNumber);
 
