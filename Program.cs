@@ -10,7 +10,7 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "35301113333000001";
+            string creditCardNumber = "50000000000006114";
             Program p = new Program();
 
             Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
@@ -48,55 +48,62 @@ namespace CreditCardMethods
             int tempSubstringFirstTwoNumbers = Convert.ToInt32(cardNumber.Substring(0,2));
             int tempSubstringFirstFourNumbers = Convert.ToInt32(cardNumber.Substring(0,4));
 
-            if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
+            if (IsCreditCardNumberValid(cardNumber))
             {
-                if (CreditCardNumbersCount(cardNumber) == 15)
+                if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
                 {
-                    return "American Express";
+                    if (CreditCardNumbersCount(cardNumber) == 15)
+                    {
+                        return "American Express";
+                    }
+                    else
+                    {
+                        return "Unknown";
+                    }
                 }
-                else
+                else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
                 {
-                    return "Unknown";
+                    if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                    {
+                        return "Maestro";
+                    }
+                    else
+                    {
+                        return "Unknown";
+                    }
                 }
-            }
-            else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
-            {
-                if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
                 {
-                    return "Maestro";
+                    if (CreditCardNumbersCount(cardNumber) == 16)
+                    {
+                        return "MasterCard";
+                    }
+                    else
+                    {
+                        return "Unknown";
+                    }
                 }
-                else
+                else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
                 {
-                    return "Unknown";
+                    if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
+                    {
+                        return "Visa";
+                    }
+                    else
+                    {
+                        return "Unknown";
+                    }
                 }
-            }
-            else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
-            {
-                if (CreditCardNumbersCount(cardNumber) == 16)
+                else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
                 {
-                    return "MasterCard";
-                }
-                else
-                {
-                    return "Unknown";
-                }
-            }
-            else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
-            {
-                if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
-                {
-                    return "Visa";
-                }
-                else
-                {
-                    return "Unknown";
-                }
-            }
-            else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
-            {
-                if (CreditCardNumbersCount(cardNumber) == 16)
-                {
-                    return "JCB";
+                    if (CreditCardNumbersCount(cardNumber) == 16)
+                    {
+                        return "JCB";
+                    }
+                    else
+                    {
+                        return "Unknown";
+                    }
                 }
                 else
                 {
@@ -193,41 +200,48 @@ namespace CreditCardMethods
             string oldVendor = GetCreditCardVendor(cardNumber);
             List<int> convCardNumber = ConvertedCardNumber(cardNumber);
 
-            string strCardNumber = convCardNumber.ToString();
-            do
+            if (oldVendor != "Unknown")
             {
-                if ((convCardNumber[(convCardNumber.Count - 1)]) != 9)
+                string strCardNumber = convCardNumber.ToString();
+                do
                 {
-                    convCardNumber[(convCardNumber.Count - 1)] += 1;
-                }
-                else
-                {
-                    (convCardNumber[(convCardNumber.Count - 1)]) = 0;
-
-                    if ((convCardNumber[(convCardNumber.Count - 2)]) != 9)
+                    if ((convCardNumber[(convCardNumber.Count - 1)]) != 9)
                     {
-                        convCardNumber[(convCardNumber.Count - 2)] += 1;
+                        convCardNumber[(convCardNumber.Count - 1)] += 1;
                     }
                     else
                     {
-                        convCardNumber[(convCardNumber.Count - 2)] = 0;
-                        convCardNumber[(convCardNumber.Count - 3)] += 1;
+                        (convCardNumber[(convCardNumber.Count - 1)]) = 0;
+
+                        if ((convCardNumber[(convCardNumber.Count - 2)]) != 9)
+                        {
+                            convCardNumber[(convCardNumber.Count - 2)] += 1;
+                        }
+                        else
+                        {
+                            convCardNumber[(convCardNumber.Count - 2)] = 0;
+                            convCardNumber[(convCardNumber.Count - 3)] += 1;
+                        }
                     }
+
+                    strCardNumber = ConvertNumberToString(convCardNumber);
                 }
-                                
-                strCardNumber = ConvertNumberToString(convCardNumber);
-            }
-            while (!(IsCreditCardNumberValid(strCardNumber)));
+                while (!(IsCreditCardNumberValid(strCardNumber)));
 
-            string newVendor = GetCreditCardVendor(strCardNumber);
+                string newVendor = GetCreditCardVendor(strCardNumber);
 
-            if ((oldVendor) == (newVendor))
-            {
-                return strCardNumber;
+                if ((oldVendor) == (newVendor))
+                {
+                    return strCardNumber;
+                }
+                else
+                {
+                    return "No more card numbers available for this vendor.";
+                }
             }
             else
             {
-                return "No more card numbers available for this vendor.";
+                return "Currend credit number vendor is not recognized";
             }
         }
 
