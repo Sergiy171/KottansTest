@@ -10,7 +10,7 @@ namespace CreditCardMethods
     {
         static void Main(string[] args)
         {
-            string creditCardNumber = "50000000000006114";
+            string creditCardNumber = "35301113333000001";
             Program p = new Program();
 
             Console.WriteLine(p.CreditCardNumbersCount(creditCardNumber));
@@ -40,6 +40,9 @@ namespace CreditCardMethods
             Console.WriteLine();
             Console.WriteLine("Наступний номер: " + Convert.ToString(p.GenerateNextCreditCardNumber(creditCardNumber)));
 
+            Console.WriteLine();
+            Console.WriteLine("Валідність: " + Convert.ToString(p.IsCreditCardNumberValid(creditCardNumber)));
+            
             Console.ReadKey();
         }
 
@@ -48,11 +51,11 @@ namespace CreditCardMethods
             int tempSubstringFirstTwoNumbers = Convert.ToInt32(cardNumber.Substring(0,2));
             int tempSubstringFirstFourNumbers = Convert.ToInt32(cardNumber.Substring(0,4));
 
-            if (IsCreditCardNumberValid(cardNumber))
+            if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
             {
-                if (tempSubstringFirstTwoNumbers == 34 || tempSubstringFirstTwoNumbers == 37)
+                if (CreditCardNumbersCount(cardNumber) == 15)
                 {
-                    if (CreditCardNumbersCount(cardNumber) == 15)
+                    if (IsCreditCardNumberValid(cardNumber))
                     {
                         return "American Express";
                     }
@@ -61,9 +64,16 @@ namespace CreditCardMethods
                         return "Unknown";
                     }
                 }
-                else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
+                else
                 {
-                    if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                    return "Unknown";
+                }
+            }
+            else if ((tempSubstringFirstTwoNumbers == 50) || ((tempSubstringFirstTwoNumbers >= 56) && (tempSubstringFirstTwoNumbers <= 69)))
+            {
+                if ((CreditCardNumbersCount(cardNumber) >= 12) && (CreditCardNumbersCount(cardNumber) <= 19))
+                {
+                    if (IsCreditCardNumberValid(cardNumber))
                     {
                         return "Maestro";
                     }
@@ -72,9 +82,16 @@ namespace CreditCardMethods
                         return "Unknown";
                     }
                 }
-                else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
+                else
                 {
-                    if (CreditCardNumbersCount(cardNumber) == 16)
+                    return "Unknown";
+                }
+            }
+            else if (((tempSubstringFirstFourNumbers >= 2221) && (tempSubstringFirstFourNumbers <= 2720)) || ((tempSubstringFirstTwoNumbers >= 51) && (tempSubstringFirstTwoNumbers <= 55)))
+            {
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    if (IsCreditCardNumberValid(cardNumber))
                     {
                         return "MasterCard";
                     }
@@ -83,9 +100,16 @@ namespace CreditCardMethods
                         return "Unknown";
                     }
                 }
-                else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
+                else
                 {
-                    if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
+                    return "Unknown";
+                }
+            }
+            else if (Convert.ToInt32(Convert.ToString(cardNumber[0])) == 4)
+            {
+                if ((CreditCardNumbersCount(cardNumber) == 13) || (CreditCardNumbersCount(cardNumber) == 16) || (CreditCardNumbersCount(cardNumber) == 19))
+                {
+                    if (IsCreditCardNumberValid(cardNumber))
                     {
                         return "Visa";
                     }
@@ -94,9 +118,16 @@ namespace CreditCardMethods
                         return "Unknown";
                     }
                 }
-                else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
+                else
                 {
-                    if (CreditCardNumbersCount(cardNumber) == 16)
+                    return "Unknown";
+                }
+            }
+            else if ((tempSubstringFirstFourNumbers >= 3528) && (tempSubstringFirstFourNumbers <= 3589))
+            {
+                if (CreditCardNumbersCount(cardNumber) == 16)
+                {
+                    if (IsCreditCardNumberValid(cardNumber))
                     {
                         return "JCB";
                     }
@@ -174,9 +205,16 @@ namespace CreditCardMethods
 
         public bool IsCreditCardNumberValid(string cardNumber)
         {
-            if ((LuhnSummary(SimpleLuhnAlgorithm(ConvertedCardNumber(cardNumber))) % 10) == 0)
+            if (GetCreditCardVendor(cardNumber) != "Unknown")
             {
-                return true;
+                if ((LuhnSummary(SimpleLuhnAlgorithm(ConvertedCardNumber(cardNumber))) % 10) == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
